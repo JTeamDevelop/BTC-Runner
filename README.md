@@ -1,4 +1,4 @@
-# BTC-Runner
+# BTC-Runner V 0.1
 *This game is released freely and will always remain free to play because the grace of God is available freely through His son Jesus Christ.*
 
 Bitcoin Runner (BTCR) is a [roguelike](http://www.roguebasin.com/index.php?title=Main_Page "RogueBasin").  You control a Runner who scours randomly generated Mazes in search of Relics of the past before the Mazes are devoured by the Nothing.  
@@ -16,11 +16,11 @@ Run fast!
 You can move up, down, left, and right by using the arrow keys or the arrow buttons at the bottom of the screen.  You can only move on the dots.  
 
 ### Icons
-* @ - Your character.
-* . - An open spot that your character can move to.
-* Ƀ - You can find treasure here.  We would use the bitcoin symbol but not every browser recognizes it yet.  Most is treasure - only one on every map is a relic.  
-* \# - Stairs leading up or down a level. 
-* . or A-Z - An exit from the current map to another map on the same level.  Dots represent unexplored exits, while letters have been explored and lead to that specific map.  
+* White @ - Your character.
+* White . - An open spot that your character can move to.
+* Gold Ƀ - You can find treasure here.  We would use the bitcoin symbol but not every browser recognizes it yet.  Most is treasure - only one on every map is a relic.  
+* Green \# - Stairs leading up or down a level. 
+* Green . or A-Z - An exit from the current map to another map on the same level.  Dots represent unexplored exits, while letters have been explored and lead to that specific map.  
 
 ### Roadmap
 #### V 0.1 - Current Capability
