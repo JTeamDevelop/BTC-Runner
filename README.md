@@ -24,7 +24,7 @@ You can move up, down, left, and right by using the arrow keys or the arrow butt
 
 ### Roadmap
 #### V 0.1 - Current Capability
-- Load bitcoin block & transaction data from remote server (Blockchain.com)
+- Load bitcoin block & transaction data from remote server (blockexplorer.com)
 - Generate 100 levels from blockchain data (Chance)
 - Maintain 36 block window
 - Generate maps from transaction data (rot.js)
@@ -54,7 +54,7 @@ BTCR is built using the following libraries:
 - [localForage](http://localforage.github.io/localForage/) - Storage backend for app.
 - [socket.io](https://socket.io/) - Simple websocket communication with the server.
 
-This app relies on Blockexplorer.com for blockchain data.
+This app relies on [Blockexplorer.com](https://blockexplorer.com/) for blockchain data.
 
 **You have the JTeam promise that this game will always remain free to play and open source under the GNU GPLv3 license.**
 
