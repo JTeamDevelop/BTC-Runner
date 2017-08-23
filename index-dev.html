@@ -1,0 +1,202 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="CPX Plane Network">
+    <meta name="keywords" content="HTML,JavaScript">
+    <title>CPX Net</title>
+  </head>
+  <link rel="stylesheet" href="lib/noty.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="dev/main.css">
+  <body>
+    <div id="app">
+      <!-- NAVBAR -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="#" class="navbar-brand">BTC Runner                
+            </a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav"></ul>
+            <p class="navbar-text navbar-right">
+              <span v-if="height>0">Block: {{height}}</span>
+            </p>
+          </div>
+          <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+      </nav>
+      <!-- NAVBAR END -->
+      <div id="main" v-if="show.blocks">
+        <div class="center-div">
+          <h3 class="center">Open Mazes</h3>
+          <table id="blockTable" class="center" style="width:100%">
+            <tr>
+              <th class="center">Maze</th>
+              <th class="center">Time Remaining</th>
+              <th class="center">Relics Claimed</th>
+            </tr>
+            <tr v-for="b in run" v-if="b<=height && 36-(height-b) > 0" v-cloak>
+              <td class="block" @click="pullBlock(b)">{{b}}</td>
+              <td>{{36-(height-b)}}</td>
+              <td>{{tClaimed[b]}}</td>
+            </tr>
+          </table>
+          <h3 class="center">
+            Runners <button type="button" class="btn btn-success" @click="newName()" data-toggle="modal" data-target="#modalNewRunner">New</button>
+          </h3>
+          <table class="center" style="width:100%">
+            <tr>
+              <th class="center">Name</th>
+              <th class="center">Location</th>
+              <th class="center">Status</th>
+              <th class="center">Relics</th>
+              <th class="center">Score</th>
+            </tr>
+            <tr v-for="(R,id) in runners" v-if="!R.status.includes('lost')">
+              <td @click="runnerID=id" data-toggle="modal" data-target="#modalRunnerData">{{R.name}}</td>
+              <td>
+                <span v-if="R.block==0">Outside</span>
+                <span class="block" @click="pullBlock(R.block)" v-else>{{R.block}}</span>
+              </td>
+              <td>{{R.status.join(', ')}}</td>
+              <td>{{R.relics}}</td>
+              <td>{{R.score.toFixed(2)}}</td>
+            </tr>
+          </table>
+          <h3 class="center">Lost</h3>
+          <div class="center">
+            <span>{{lost.join(', ')}}</span>
+          </div>
+        </div>
+      </div>
+      <div id="display" v-if="show.map" v-cloak>
+        <h3 class="center">
+          Maze {{blockN}} Level {{levelN}} <span v-if="mapID!=''">Map {{mapID}}</span>
+        </h3>
+        <div class="center" v-if="!show.blocks" v-cloak>
+          <button type="button" class="btn btn-lg btn-default" @click="showLevelMap()">Level</button>
+          <button type="button" class="btn btn-lg btn-default" @click="showActiveMap()">Map</button>
+        </div>
+        <div class="center" v-if="show.blocks">
+          <button class="btn btn-success" v-for="R in runners" v-if="R.block == 0 || R.block==blockN" @click="enterBlock(R.id)">Run with {{R.name}}</button>
+        </div>
+        <div id="touchControls" class="center" v-if="show.touch && this.runnerID.length >0" v-cloak>
+          <button type="button" class="btn btn-lg btn-default" @click="zoom(-1)">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-lg btn-default" @click="movePC(-1,0)">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-lg btn-default" @click="movePC(0,-1)">
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-lg btn-default" @click="movePC(0,1)">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-lg btn-default" @click="movePC(1,0)">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn btn-lg btn-default" @click="zoom(1)">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="modalRunnerData" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" v-if="runnerID.length>0">
+            <div class="modal-header">
+              <h4 class="modal-title">{{mainPC.name}}</h4>
+            </div>
+            <div class="modal-body">
+              <table class="center" style="width:100%">
+                <tr>
+                  <th class="center">ID</th>
+                  <th class="center">Relic</th>
+                  <th class="center">Value</th>
+                </tr>
+                <tr v-for="(C,i) in mainPC.claimed">
+                  <td>{{C[1].slice(0,8)}}...</td>
+                  <td><span>{{C[2] == 0 ? 'Yes' : 'No'}}</span></td>
+                  <td>{{mainPC.claimedValues[i].toFixed(2)}}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade bs-example-modal-sm" id="modalNewRunner" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">New Runner</h4>
+            </div>
+            <div class="modal-body">
+              <label for="runner-name">Name your Runner</label>
+              <div class="input-group">
+                <span class="input-group-addon">Name</span>
+                <input type="text" class="form-control" id="runner-name" v-model="runnerName">
+              </div>
+              <button type="button" class="btn btn-success btn-block" @click="newRunner()" data-dismiss="modal">Create</button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="modalWelcome" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Welcome Runner!</h4>
+            </div>
+            <div class="modal-body">
+              <p>It looks like you're new here.  Welcome to Vast the biggest city in the 'verse.
+                It gets that way because it's constantly puttin on and sluffin off.  
+                Don't know the dark of how - don't care.    
+              </p>
+              <p>But that sluff part is where I - and now you come in.  You see, before the 
+              Nothing takes what the city don't want, it all gets buried by the new that Vast stacks on.  
+              And from time to time, cracks open lettin canny folk get into these places.  These Mazes.
+              A twisted jumble they are, plenty a sod 's been lost tryin to uncover their dark.  
+              And the cracks are only open for a short time too before the Nothing takes it all -
+              the Maze and any berk that stays inside.  Gone forever.        
+              </p>
+              <p>So why all the chatter? The Mazes always hold relics of the past - hundreds if not 
+              thousands of 'em.  Shiny baubles sure to bring a peery cutter fame and ease.  And the right one: 
+              that special hidden in the deepest part of the Maze... There's no limit.  Emperor of 
+              your own plane probably - a High-up for life.  
+              </p>
+              <p>You ready? Run fast!</p>
+            </div>
+            <div class="modal-footer" style="text-align:left">
+              <label for="runner-name">Name your Runner</label>
+              <div class="input-group">
+                <span class="input-group-addon">Name</span>
+                <input type="text" class="form-control" id="runner-name" v-model="runnerName">
+              </div>
+              <button type="button" class="btn btn-success btn-block" @click="newRunner()" data-dismiss="modal">Start</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script data-main="dev/app.js" src="require.js"></script>
+</html>

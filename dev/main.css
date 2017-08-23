@@ -1,0 +1,62 @@
+html, body {
+  font-size: 16px;
+}
+
+.block {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.center-div {
+  margin: auto;
+}
+
+.center {
+  text-align: center;
+}
+
+.content-minor {
+  padding: 5px;
+}
+
+#main{
+  width: 100%;
+  margin: auto;
+}
+
+#rot-display{
+  margin: auto;
+  display: block;
+}
+
+#touchControls
+{
+  position: fixed;
+  bottom: 5;
+  left: 50%;
+  transform: translate(-50%,0%);
+}
+
+[v-cloak] {
+  display: none;
+}
+
+#levelGraph{
+  margin: auto;
+  display: block;
+  padding: 5px;
+}
+
+.link {
+  stroke: black;
+}
+
+.node {
+  stroke: blue;
+  stroke-width: 1px;
+}
+
+table#blockTable tr:nth-child(even) {
+    background-color: rgba(171, 250, 250, 0.5);
+}
