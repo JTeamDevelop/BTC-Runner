@@ -94,6 +94,8 @@ define(function(require) {
         max: 75
       }) ]
       
+      //clear and make new
+      App.enter = [];
       //for each level determine the tx/map
       el.forEach(function(li) {
         App.enter.push([li, chance.integer({
